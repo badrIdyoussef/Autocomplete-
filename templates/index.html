@@ -1,0 +1,82 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Trie</title>
+</head>
+
+
+<body>
+    <h1>AutoComplete Implementation</h1>
+    <input type="text" id='input' autofocus placeholder='country'>
+    <ul id = 'list'>
+    </ul>
+    
+</body>
+
+<script>
+
+    const myInput = document.getElementById("input")
+    const ul      = document.getElementById("list")
+
+    myInput.addEventListener("keydown", function(event) {
+        // Check if the Enter key is pressed (key code 13)
+        if (event.keyCode === 13) {
+          // Perform some action when Enter key is released
+          alert("Enter key was pressed!");
+          return
+        }
+        autoComplete(event.key)
+
+      });
+
+    
+      
+    function autoComplete(value){
+        let characters = myInput.value 
+        if(event.key ==='Backspace'){
+          characters  = characters.slice(0 , -1)
+        }else{
+          characters  = characters + event.key
+        }
+        characters.trim()
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+              // Add any other headers if needed
+            },
+            body: JSON.stringify({'characters' : characters})
+          };
+          fetch('http://127.0.0.1:5000/trie/autoComplete',requestOptions).then(response => {
+            // Check if the request was successful (status code 200-299)
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            // Parse the JSON data in the response
+            return response.json()
+            //return array;
+          })
+          .then(data => {
+            // Handle the response data
+            ul.innerHTML = ''
+            for(let country of data){
+              var li = document.createElement("li");
+              li.innerHTML = country
+              ul.appendChild(li);
+            }
+          })
+          .catch(error => {
+            // Handle errors
+            console.error('Fetch error:', error);
+          });
+    }
+
+
+   
+                                         
+
+
+  </script>
+</html>
